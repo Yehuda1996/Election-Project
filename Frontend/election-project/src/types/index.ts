@@ -1,9 +1,9 @@
 export interface User {
     username: string,
     password: string,
-    isAdmin: boolean,
-    hasVoted: boolean,
-    votedFor: Candidate | null
+    isAdmin?: boolean,
+    hasVoted?: boolean,
+    votedFor?: Candidate | null
 }
 
 export interface Candidate {

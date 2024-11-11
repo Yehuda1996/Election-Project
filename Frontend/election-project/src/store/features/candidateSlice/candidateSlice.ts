@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Candidate, Status, RootState } from "../../../types";
+import { Candidate, Status } from "../../../types";
 import axios from 'axios';
 
 interface CandidateStateType {
@@ -49,7 +49,5 @@ export const candidateSlice = createSlice({
         })
     }
 }) 
-
-export const selectAllCandidates = (state: RootState): Candidate[] => state.candidates;
 
 export default candidateSlice.reducer;
