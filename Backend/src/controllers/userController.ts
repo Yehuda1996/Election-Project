@@ -8,11 +8,13 @@ export const register = async (req: Request, res: Response) => {
         const {username, password, isAdmin} = req.body;
         if (!username || !password){
             res.status(400).json("Both fields are required")
+            return;
         }
         
         const existingUser = await UserModel.findOne({username});
         if(existingUser) {
-            res.status(400).json("This username is already in use");
+            res.status(400).json("This username is already in use")
+            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,7 +22,7 @@ export const register = async (req: Request, res: Response) => {
         const newUser = new UserModel(
             {
                 username,
-                password,
+                password: hashedPassword,
                 isAdmin: false,
                 hasVoted: false,
                 votedFor: null
@@ -28,9 +30,11 @@ export const register = async (req: Request, res: Response) => {
         );
         await newUser.save();
         res.status(201).json({message: "User registered successfully", user: newUser})
+        return;
     } 
     catch (error: any) {
         res.status(500).json({ message: "Server error", error: error.message })
+        return;
     }
 };
 
@@ -38,23 +42,28 @@ export const login = async (req: Request, res: Response) => {
     try {
         const {username, password} = req.body;
         if (!username || !password) {
-            res.status(400).json("Username and password are required")
+            res.status(400).json("Username and password are required") 
+            return
         }
 
         const user = await UserModel.findOne({username});
         if (!user) {
             res.status(400).json("No user found by that username")
+            return
         }
         else{
             const passwordValidity = await bcrypt.compare(password, user.password);
             if(!passwordValidity){
                 res.status(400).json({message: 'Invalid password'});
+                return
             }
         }
 
         res.status(200).json("Login successful")
+        return;
     } 
     catch (error: any) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error", error: error.message })
+        return;
     }
 };
