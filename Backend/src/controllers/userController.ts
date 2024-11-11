@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import UserModel from '../models/UserModel';
+import  jwt  from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret';
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -59,7 +62,9 @@ export const login = async (req: Request, res: Response) => {
             }
         }
 
-        res.status(200).json("Login successful")
+        const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '1h'})
+
+        res.status(200).json({message: "Login successful", token})
         return;
     } 
     catch (error: any) {
