@@ -63,6 +63,7 @@ export const login = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '1h'})
+        localStorage.setItem("user_token", token);
 
         res.status(200).json({message: "Login successful", token})
         return;
