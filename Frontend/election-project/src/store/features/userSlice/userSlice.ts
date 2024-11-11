@@ -5,12 +5,14 @@ import axios from 'axios';
 interface UserStateType {
     user: User | null,
     status: Status,
+    token: string | null
     error: string | null
 }
 
 const initialState: UserStateType = {
     user: null,
     status: "idle",
+    token: null,
     error: null
 }
 
@@ -19,6 +21,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const registerUser = createAsyncThunk('user/registerUser', async (data: User): Promise<User | undefined> => {
     try {
         const response = await axios.post(`${BASE_URL}/register`, data);
+        localStorage.setItem('token', response.data.accessToken);
         return response.data;    
     } 
     catch (error) {
@@ -29,6 +32,7 @@ export const registerUser = createAsyncThunk('user/registerUser', async (data: U
 export const loginUser = createAsyncThunk('user/loginUser', async (data: User): Promise<User | undefined> => {
     try {
         const response = await axios.post(`${BASE_URL}/login`, data);
+        localStorage.setItem('token', response.data.accessToken);
         return response.data;    
     } 
     catch (error) {
@@ -36,10 +40,28 @@ export const loginUser = createAsyncThunk('user/loginUser', async (data: User): 
     }
 });
 
+export const getUser = createAsyncThunk('user/getUser', async (token: string): Promise<User | undefined> => {
+    try {
+        const response = await axios.get(`${BASE_URL}/user/:id`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data
+    } 
+    catch (error) {
+        
+    }
+});
+
 export const userSlice = createSlice({
     initialState,
     name: "users",
-    reducers: {},
+    reducers: {
+        logout: (state) => {
+            state.user = null;
+        }
+    },
     extraReducers(builder) {
         builder
         .addCase(registerUser.pending, (state) => {
@@ -75,5 +97,5 @@ export const userSlice = createSlice({
     },
 })
 
-
+export const {logout} = userSlice.actions;
 export default userSlice.reducer;
