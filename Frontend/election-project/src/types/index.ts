@@ -1,12 +1,14 @@
 export interface User {
+    _id?: string,
     username: string,
     password: string,
     isAdmin?: boolean,
     hasVoted?: boolean,
-    votedFor?: Candidate | null
+    votedFor?: string | null
 }
 
 export interface Candidate {
+    _id: string,
     name: string,
     image: string,
     votes: number

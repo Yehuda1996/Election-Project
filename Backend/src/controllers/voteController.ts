@@ -9,7 +9,10 @@ export const handleVote = async (req: Request, res: Response) => {
 
         const user = await UserModel.findById(userId);
         const candidate = await CandidateModel.findById(candidateId);
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user){
+            res.status(404).json({ message: "User not found" });
+            return;
+        }  
 
         if (user.hasVoted && user.votedFor !== candidate) {
             await CandidateModel.findByIdAndUpdate(user.votedFor, {
