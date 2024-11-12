@@ -63,7 +63,6 @@ export const login = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '1h'})
-        localStorage.setItem("user_token", token);
 
         res.status(200).json({message: "Login successful", token})
         return;
@@ -76,13 +75,22 @@ export const login = async (req: Request, res: Response) => {
 
 export const getUserById = async (req: Request, res: Response) => {
     try {
-        const {_id} = req.body;
+        const { _id } = req.body; 
+
+        if (!_id) {
+            res.status(400).json({ message: "User ID is required" });
+            return
+        }
+
         const user = await UserModel.findById(_id);
-        res.status(200).json(user)
-        return;
-    } 
-    catch (error: any) {
-        res.status(500).json({ message: "Server error", error: error.message })
-        return;
+        
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        res.status(200).json(user);
+    } catch (error: any) {
+        res.status(500).json({ message: "Server error", error: error.message });
     }
-}
+};

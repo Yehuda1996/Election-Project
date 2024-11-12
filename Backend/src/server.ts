@@ -4,6 +4,7 @@ import cors from 'cors';
 import connnectDb from './config/db';
 import userRoutes from '../src/routes/userRoutes';
 import candidateRoutes from '../src/routes/candidateRoutes'
+import voteRoutes from '../src/routes/voteRoutes'
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ connnectDb();
 
 app.use('/api', userRoutes);
 app.use('/api', candidateRoutes);
+app.use('/api', voteRoutes);
 
 
 app.listen(PORT, () => {

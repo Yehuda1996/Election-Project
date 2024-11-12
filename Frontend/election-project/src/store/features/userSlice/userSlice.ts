@@ -42,7 +42,7 @@ export const loginUser = createAsyncThunk('user/loginUser', async (data: User): 
 
 export const getUser = createAsyncThunk('user/getUser', async (token: string): Promise<User | undefined> => {
     try {
-        const response = await axios.get(`${BASE_URL}/user/:id`, {
+        const response = await axios.get(`${BASE_URL}/user`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
